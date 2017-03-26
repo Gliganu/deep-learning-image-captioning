@@ -131,7 +131,7 @@ def construct_images_concat_t(image_data_arr):
 
 def write_captions_to_disk(path,image_data_arr):
     for i in tqdm(range(5)):
-        captions = ["START "+image_data.captions[i]+" END" for image_data in image_data_arr] 
+        captions = ["START "+image_data.captions[i][:-1]+" END" for image_data in image_data_arr] 
         pickle.dump( captions, open(path+"captions_batch_"+str(i)+".p", "wb" ) )
         
         
@@ -151,7 +151,13 @@ def get_truncated_captions_from_batch(path,batch_nr,nr_instances):
     return captions[:nr_instances]
 
 
+def save_obj(obj, path ):
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+def load_obj(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
         
 
 
