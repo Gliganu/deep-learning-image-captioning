@@ -8,7 +8,7 @@ from keras.layers.advanced_activations import PReLU, LeakyReLU
 from keras.layers import Embedding,GRU,TimeDistributed,RepeatVector,Merge
 from keras.preprocessing.text import one_hot
 from keras.preprocessing import sequence
-import cv2
+#import cv2
 import numpy as np
 from vgg16 import Vgg16
 
