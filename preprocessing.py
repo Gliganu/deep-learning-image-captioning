@@ -129,11 +129,14 @@ def construct_images_concat_t(image_data_arr):
     return images_concat_t
 
 
-def write_captions_to_disk(path,image_data_arr):
+def get_captions_list(image_data_arr):
+    captions_list = []
     for i in tqdm(range(5)):
         captions = ["START "+image_data.captions[i][:-1]+" END" for image_data in image_data_arr] 
-        pickle.dump( captions, open(path+"captions_batch_"+str(i)+".p", "wb" ) )
+        captions_list.append(captions)
         
+    return captions_list
+       
         
 def read_serialized_np_arr(path,nr_instances = None):
     images_concat_t = load_array(path)
@@ -159,6 +162,57 @@ def load_obj(path):
     with open(path, 'rb') as f:
         return pickle.load(f)
         
+
+def get_unique_words(captions):
+    unique_words = []
+    words = [caption.split() for caption in captions]
+   
+    for word in words:
+        unique_words.extend(word)
+        
+    unique_words = list(set(unique_words))
+    
+    return unique_words
+
+def get_index_word_dicts(unique_words):
+    word_index = {}
+    index_word = {}
+    for i,word in enumerate(unique_words):
+        word_index[word] = i
+        index_word[i] = word
+        
+    return (word_index,index_word)
+
+
+
+def has_only_common_words(caption,word2valid):
+    valid_words = [word2valid[word] for word in caption.split()]
+    return all(valid_words)
+
+def compute_common_words_caption_mask(captions,min_no_of_app):
+    
+    sentences = [caption.split() for caption in captions]
+    words = []
+    for word in sentences:
+        words.extend(word)
+
+    counter=collections.Counter(words)
+    
+    word2no_app = dict(counter.most_common())
+    
+    word2valid = {word:app>=min_no_of_app for word,app in word2no_app.iteritems()}
+    
+    corect_captions = [has_only_common_words(caption,word2valid) for caption in captions]
+    
+    return corect_captions
+
+
+def get_short_caption_mask(captions, max_length):
+    return [len(caption.split()) < max_length for caption in captions]
+
+
+def filter_array_by_mask(arr, mask):
+    return np.asarray(list(compress(arr, mask)))
 
 
 
