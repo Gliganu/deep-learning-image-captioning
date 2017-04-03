@@ -16,7 +16,8 @@ from os.path import isfile, join
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
+import re
+from numpy.random import random, permutation, randn, normal 
 import PIL.Image
 import os
 import json
@@ -259,10 +260,54 @@ def plot_loss_from_history(history,withLoss = False):
     plt.xlabel('epoch')
     plt.legend(['test', 'train'], loc='upper left')
     plt.show()
-    
-    
+
+def load_vectors(loc):
+    return (load_array(loc+'.dat'),
+        pickle.load(open(loc+'_words.pkl','rb')),
+        pickle.load(open(loc+'_idx.pkl','rb')))   
 
 
+
+
+def create_emb(vecs,words,wordidx,index2word,vocab_size):
+    n_fact = vecs.shape[1]
+    emb = np.zeros((vocab_size, n_fact))
+
+    found = 0
+    not_found = 0
+    
+    exclude = set(string.punctuation)
+    for i in range(1,len(emb)):
+        word = index2word[i]
+        word = ''.join(ch for ch in word if ch not in exclude).lower()
+        if word and re.match(r"^[a-zA-Z0-9\-]*$", word) and word in wordidx:
+            src_idx = wordidx[word]
+            emb[i] = vecs[src_idx]
+            found +=1
+        else:
+            # If we can't find the word in glove, randomly initialize
+            emb[i] = normal(scale=0.6, size=(n_fact,))
+            not_found+=1
+#             print(word)
+
+    # This is our "rare word" id - we want to randomly initialize
+    emb[-1] = normal(scale=0.6, size=(n_fact,))
+    emb/=3
+    
+    print("Found = %d"%found)
+    print("Not found = %d"%not_found)
+        
+    return emb
+
+    
+def plot_predictions(ims, titles = None):  
+    for i in range(len(ims)):
+        if(titles):
+            plt.title(titles[i])
+        plt.imshow(ims[i])
+        plt.figure()
+            
+    plt.show()
 
 
 

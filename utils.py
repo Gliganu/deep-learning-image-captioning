@@ -26,6 +26,8 @@ glove_folder = "glove/"
 misc_images_folder = "misc-images/"
 models_folder = "models/"
 indexed_prev_captions_folder = "indexed-prev-captions/"
+predictions_folder = "predictions/"
+
 
 def save_array(fname, arr):
     c=bcolz.carray(arr, rootdir=fname, mode='w')
