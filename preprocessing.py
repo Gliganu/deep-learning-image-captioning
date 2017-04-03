@@ -309,7 +309,23 @@ def plot_predictions(ims, titles = None):
             
     plt.show()
 
+def most_common_words(captions,word_limit = None):
+    
+    words = []
+    for caption in captions:
+        for word in caption.split():
+            words.append(word)
+        
+    common_words2app = None
+    if(word_limit is None):
+        common_words2app = collections.Counter(words).most_common()
+    else:
+        common_words2app = collections.Counter(words).most_common(word_limit)
+        
+    common_words2app = [(word,app) for word,app in common_words2app if word.lower() not in stopwords.words('english')]
+    common_words2app = [(word,app) for word,app in common_words2app if word not in ['START','END']]
 
+    return common_words2app
 
 
 
