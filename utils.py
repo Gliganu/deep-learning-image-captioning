@@ -24,7 +24,8 @@ indexed_captions_folder = "indexed-captions/"
 indexed_future_words_folder = "indexed-future-words/"
 glove_folder = "glove/"
 misc_images_folder = "misc-images/"
-
+models_folder = "models/"
+indexed_prev_captions_folder = "indexed-prev-captions/"
 
 def save_array(fname, arr):
     c=bcolz.carray(arr, rootdir=fname, mode='w')

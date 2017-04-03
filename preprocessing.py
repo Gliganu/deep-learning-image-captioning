@@ -8,7 +8,6 @@ from keras.layers.advanced_activations import PReLU, LeakyReLU
 from keras.layers import Embedding,GRU,TimeDistributed,RepeatVector,Merge
 from keras.preprocessing.text import one_hot
 from keras.preprocessing import sequence
-#import cv2
 import numpy as np
 from vgg16 import Vgg16
 
@@ -19,7 +18,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 import PIL.Image
-
+import os
 import json
 from tqdm import tqdm
 
@@ -213,6 +212,62 @@ def get_short_caption_mask(captions, max_length):
 
 def filter_array_by_mask(arr, mask):
     return np.asarray(list(compress(arr, mask)))
+
+
+def get_images_concat(path,nr_instances):
+    return read_serialized_np_arr(path)[:nr_instances]
+
+
+
+def get_captions_raw_and_indexed(raw_captions_path, indexed_captions_path):
+    
+    indexed_captions = []
+    raw_captions = []
+    
+    indexed_captions_elements = os.listdir(indexed_captions_path)
+    raw_captions_elements = os.listdir(raw_captions_path)
+    
+    indexed_captions_elements.sort()
+    raw_captions_elements.sort()
+    
+    nr_elem = len(indexed_captions_elements)
+
+    for index in tqdm(range(nr_elem)):
+        
+        indexed_caption_name = indexed_captions_elements[index]
+        indexed_caption = load_array(indexed_captions_path+"/"+indexed_caption_name)
+        indexed_captions.append(indexed_caption)        
+        
+        raw_caption_name = raw_captions_elements[index]
+        raw_caption = load_array(raw_captions_path+"/"+raw_caption_name)
+        raw_captions.append(raw_caption)        
+        
+    
+    stacked_indexed_captions = np.vstack(indexed_captions)
+    stacked_raw_captions = np.vstack(raw_captions)
+    
+    return (stacked_raw_captions,stacked_indexed_captions)
+
+
+def plot_loss_from_history(history,withLoss = False):
+    
+    if(withLoss):
+        plt.plot(history.history['val_loss'])
+    plt.plot(history.history['loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['test', 'train'], loc='upper left')
+    plt.show()
+    
+    
+
+
+
+
+
+
+
 
 
 
