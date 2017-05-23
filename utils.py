@@ -12,6 +12,8 @@ val_annotation_path = save_path +"raw_annotations/captions_val2014.json"
 
 full_data_path = data_path+"full/"
 app_3_length_15_data_path = data_path+"app-3-length-15/"
+app_10_length_15_data_path = data_path+"app-10-length-15/"
+app_20_length_15_big_data_path = data_path+"app-20-length-15-big/"
 
 train_folder = "train/"
 val_folder = "val/"

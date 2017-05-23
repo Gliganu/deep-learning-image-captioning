@@ -328,6 +328,12 @@ def most_common_words(captions,word_limit = None):
     return common_words2app
 
 
+def save_array_with_folder_create(folder_path,arr_name,arr):
+    if not os.path.exists(folder_path):
+        print("Creating folder: "+folder_path)
+        os.makedirs(folder_path)
+        
+    save_array(folder_path + arr_name, arr)
 
 
 
