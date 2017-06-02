@@ -59,12 +59,14 @@ class ImageEntry(object):
         self.caption = caption
         
               
-def construct_image_data_arr(base_path,fileName2ImageDataDict):   
+def construct_image_data_arr(base_path,fileName2ImageDataDict, nr_items = None):   
     
     image_paths = [f for f in listdir(base_path)]
 
+    if(not nr_items):
+        nr_items = len(image_paths)
     
-    for image_file_name in tqdm(image_paths):
+    for image_file_name in tqdm(image_paths[:nr_items]):
         
         img = PIL.Image.open(base_path+"/"+image_file_name)
         img = img.resize((224, 224), PIL.Image.NEAREST)
@@ -115,9 +117,9 @@ def get_train_test_data(image_data_arr, test_size):
     
     
 
-def get_image_data_arr(images_path,annotation_path):
+def get_image_data_arr(images_path,annotation_path,nr_items = None):
     fileName_2_image_data_dict = build_data_dict(annotation_path)
-    image_data_arr = construct_image_data_arr(images_path,fileName_2_image_data_dict)
+    image_data_arr = construct_image_data_arr(images_path,fileName_2_image_data_dict,nr_items)
     return image_data_arr
 
 
