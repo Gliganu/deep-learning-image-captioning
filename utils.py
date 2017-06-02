@@ -1,5 +1,6 @@
 
 import bcolz
+import cPickle as pickle
 
 save_path = "/home/docker/fastai-courses/deeplearning1/nbs/persistent/coco/"
 data_path = save_path+"data/"
@@ -35,7 +36,29 @@ def save_array(fname, arr):
     c=bcolz.carray(arr, rootdir=fname, mode='w')
     c.flush()
 
-
 def load_array(fname):
     return bcolz.open(fname)[:]
+
+
+def save_obj(obj, path ):
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+        
+
+def load_language_data_structures(path):
+    unique_words = load_obj(path+"unique_words")
+    word2index = load_obj(path+"word2index")
+    index2word = load_obj(path+"index2word")
+    
+    return (unique_words, word2index, index2word)
+
+
+
+
+
+
 
