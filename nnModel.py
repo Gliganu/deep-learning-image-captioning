@@ -148,7 +148,8 @@ def make_prediction_on_dataset(images_concat_t, model, word2index, index2word, M
     images = [image2Caption[0] for image2Caption in images2Captions]
     predicted_captions = [image2Caption[1] for image2Caption in images2Captions]
 
-    
+    images = [np.transpose(img,(1,2,0)) for img in images]
+        
     return (images,predicted_captions)
 
 
@@ -215,7 +216,7 @@ def get_embeddings(index2word,VOCAB_SIZE, EMB_SIZE):
     return emb
 
 def load_vectors(loc):
-    return (load_array(loc+'.dat'),
+    return (preproc.load_array(loc+'.dat'),
         pickle.load(open(loc+'_words.pkl','rb')),
         pickle.load(open(loc+'_idx.pkl','rb')))   
 

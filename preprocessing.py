@@ -39,6 +39,8 @@ import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import stopwords
 
+import bcolz
+import cPickle as pickle
 
 
 class ImageData(object):
@@ -244,46 +246,25 @@ def get_captions_raw_and_indexed(raw_captions_path, indexed_captions_path):
     return (stacked_raw_captions,stacked_indexed_captions)
 
 
-def plot_loss_from_history(history,withLoss = False):
-    
-    if(withLoss):
-        plt.plot(history.history['val_loss'])
-    plt.plot(history.history['loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['test', 'train'], loc='upper left')
-    plt.show()
+def save_array(fname, arr):
+    c=bcolz.carray(arr, rootdir=fname, mode='w')
+    c.flush()
+
+def load_array(fname):
+    return bcolz.open(fname)[:]
 
 
+def save_obj(obj, path ):
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
-    
-def plot_predictions(ims, titles = None):  
-    for i in range(len(ims)):
-        if(titles):
-            plt.title(titles[i])
-        plt.imshow(ims[i])
-        plt.figure()
-            
-    plt.show()
-
-def most_common_words(captions,word_limit = None):
-    
-    words = []
-    for caption in captions:
-        for word in caption.split():
-            words.append(word)
+def load_obj(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
         
-    common_words2app = None
-    if(word_limit is None):
-        common_words2app = collections.Counter(words).most_common()
-    else:
-        common_words2app = collections.Counter(words).most_common(word_limit)
-        
-    common_words2app = [(word,app) for word,app in common_words2app if word.lower() not in stopwords.words('english')]
-    common_words2app = [(word,app) for word,app in common_words2app if word not in ['START','END']]
 
-    return common_words2app
+
+
 
 
 def save_array_with_folder_create(folder_path,arr_name,arr):

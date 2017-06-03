@@ -38,7 +38,33 @@ from matplotlib import animation
 from IPython.display import display, HTML
 
 import pandas as pd
+import imageio
 
+
+def resize_video_frame(pic):
+    return np.asarray(Image.fromarray(np.uint8(pic)).resize((224, 224), Image.NEAREST))
+
+def read_video_frames(filename):
+    vid = imageio.get_reader(filename,  'ffmpeg')
+    
+    frames = []
+    
+    for i, im in enumerate(vid):
+        im = np.asarray(im)
+        im = np.expand_dims(im,axis=0)
+        frames.append(im)
+    
+    frames = np.vstack(frames)
+    
+    return [resize_video_frame(pic) for pic in frames]
+
+def get_mp4_vid_frames(filename):
+    
+    frames = read_video_frames(filename)
+
+    frames = np.transpose(np.asarray(frames),(0,3,1,2))
+        
+    return frames
 
 def search_video_by(searched_word,images,predicted_captions):
     lmtzr = WordNetLemmatizer()
@@ -49,6 +75,7 @@ def search_video_by(searched_word,images,predicted_captions):
         lemm_caption_words = [lmtzr.lemmatize(word) for word in caption.split()]
         if lemm_word in lemm_caption_words:
             found_indexes.append(index)
+   
     
     return ([images[i] for i in found_indexes],[predicted_captions[i] for i in found_indexes],found_indexes)
     

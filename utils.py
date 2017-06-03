@@ -1,6 +1,4 @@
 
-import bcolz
-import cPickle as pickle
 
 save_path = "/home/docker/fastai-courses/deeplearning1/nbs/persistent/coco/"
 data_path = save_path+"data/"
@@ -25,6 +23,8 @@ general_datastruct_folder = "general-datastruct/"
 images_vgg_4096_folder = "images_vgg_4096/"
 indexed_captions_folder = "indexed-captions/"
 indexed_future_words_folder = "indexed-future-words/"
+indexed_prev_captions_folder = "indexed-prev-captions/"
+
 glove_folder = "glove/"
 misc_images_folder = "misc-images/"
 models_folder = "models/"
@@ -32,29 +32,6 @@ indexed_prev_captions_folder = "indexed-prev-captions/"
 predictions_folder = "predictions/"
 
 
-def save_array(fname, arr):
-    c=bcolz.carray(arr, rootdir=fname, mode='w')
-    c.flush()
-
-def load_array(fname):
-    return bcolz.open(fname)[:]
-
-
-def save_obj(obj, path ):
-    with open(path, 'wb') as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-
-def load_obj(path):
-    with open(path, 'rb') as f:
-        return pickle.load(f)
-        
-
-def load_language_data_structures(path):
-    unique_words = load_obj(path+"unique_words")
-    word2index = load_obj(path+"word2index")
-    index2word = load_obj(path+"index2word")
-    
-    return (unique_words, word2index, index2word)
 
 
 
