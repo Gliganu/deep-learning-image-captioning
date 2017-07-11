@@ -6,6 +6,7 @@ from keras.layers import Embedding,LSTM,GRU,TimeDistributed,RepeatVector,Merge,I
 from keras.preprocessing import sequence
 from keras import callbacks
 from keras.optimizers import SGD, RMSprop, Adam
+from keras.layers.wrappers import Bidirectional
 
 import numpy as np
 from vgg16 import Vgg16
@@ -84,6 +85,23 @@ def build_model(emb, MAX_CAPTION_LEN, VOCAB_SIZE, EMB_SIZE):
     model.add(GRU(1024,activation='relu', return_sequences=True))
     model.add(Dropout(0.5))
     model.add(GRU(1024,activation='relu', return_sequences=True))
+    
+    model.add(TimeDistributed(Dense(VOCAB_SIZE, activation = 'softmax')))
+
+    model.compile(loss='categorical_crossentropy', optimizer = Adam(0.001))
+    return model
+
+
+def build_model_bidirectional(emb, MAX_CAPTION_LEN, VOCAB_SIZE, EMB_SIZE):
+    
+    image_model = get_precomputed_input_model(MAX_CAPTION_LEN)
+    language_model = get_language_model(emb, VOCAB_SIZE, EMB_SIZE, MAX_CAPTION_LEN)
+    reinforcement_model = get_reinforcement_model(emb, VOCAB_SIZE, EMB_SIZE, MAX_CAPTION_LEN)
+
+    model = Sequential()
+    model.add(Merge([image_model, language_model,reinforcement_model], mode='concat'))
+
+    model.add(Bidirectional(GRU(1024,activation='relu', return_sequences=True)))
     
     model.add(TimeDistributed(Dense(VOCAB_SIZE, activation = 'softmax')))
 
