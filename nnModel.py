@@ -264,8 +264,8 @@ def create_emb(vecs,words,wordidx,index2word,vocab_size):
     emb[-1] = normal(scale=0.6, size=(n_fact,))
     emb/=3
     
-    print("Found = %d"%found)
-    print("Not found = %d"%not_found)
+    #print("Found = %d"%found)
+    #print("Not found = %d"%not_found)
         
     return emb
 

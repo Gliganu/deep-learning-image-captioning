@@ -49,7 +49,12 @@ def read_video_frames(filename):
     
     frames = []
     
-    for i, im in enumerate(vid):
+    for i, im in tqdm(enumerate(vid)):
+        
+        if(i%100 != 0):
+            #print("conitue")
+            continue
+        
         im = np.asarray(im)
         im = np.expand_dims(im,axis=0)
         frames.append(im)
